@@ -4,7 +4,7 @@ import { getUrl } from '@/lib/storage';
 export async function GET(request, { params }) {
     const { shortCode } = await params; // params is a promise in newer Next.js versions
     const decodedShortCode = decodeURIComponent(shortCode);
-    const originalUrl = getUrl(decodedShortCode);
+    const originalUrl = await getUrl(decodedShortCode);
 
     if (originalUrl) {
         redirect(originalUrl);

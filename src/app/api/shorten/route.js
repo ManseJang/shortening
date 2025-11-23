@@ -11,7 +11,7 @@ export async function POST(request) {
 
         let shortCode;
         try {
-            shortCode = saveUrl(url, retention, alias);
+            shortCode = await saveUrl(url, retention, alias);
         } catch (error) {
             if (error.message === 'Alias already exists') {
                 return NextResponse.json({ error: '이미 사용 중인 단축 주소입니다.' }, { status: 409 });
@@ -19,13 +19,11 @@ export async function POST(request) {
             throw error;
         }
 
-        // In a real scenario with a custom domain, this would be constructed differently.
-        // For this demo, we return the code and a display URL.
-        // Using encodeURI to handle Korean characters in the display URL if needed, 
-        // but browsers usually handle unencoded display fine. 
-        // However, for the link to work in the browser tool, we might need to be careful.
-        // For display purposes:
-        const displayUrl = `http://약수.울산/${shortCode}`;
+        // Dynamic domain detection for Vercel and Localhost
+        const host = request.headers.get('host');
+        const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
+        const displayUrl = `${protocol}://${host}/${shortCode}`;
+
         const redirectUrl = `/${shortCode}`; // Relative path for local testing
 
         return NextResponse.json({
