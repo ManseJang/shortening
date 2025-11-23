@@ -20,8 +20,18 @@ export async function POST(request) {
         }
 
         // Dynamic domain detection for Vercel and Localhost
-        const host = request.headers.get('host');
-        const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
+        let host = request.headers.get('host');
+        let protocol = 'https';
+
+        if (host.includes('localhost') || host.includes('127.0.0.1') || host.includes('약수.울산')) {
+            protocol = 'http';
+        }
+
+        // Force port 3000 for local custom domain if missing
+        if (host.includes('약수.울산') && !host.includes(':')) {
+            host = `${host}:3000`;
+        }
+
         const displayUrl = `${protocol}://${host}/${shortCode}`;
 
         const redirectUrl = `/${shortCode}`; // Relative path for local testing
