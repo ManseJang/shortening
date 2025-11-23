@@ -23,13 +23,8 @@ export async function POST(request) {
         let host = request.headers.get('host');
         let protocol = 'https';
 
-        if (host.includes('localhost') || host.includes('127.0.0.1') || host.includes('약수.울산')) {
+        if (host.includes('localhost') || host.includes('127.0.0.1')) {
             protocol = 'http';
-        }
-
-        // Force port 3000 for local custom domain if missing
-        if (host.includes('약수.울산') && !host.includes(':')) {
-            host = `${host}:3000`;
         }
 
         const displayUrl = `${protocol}://${host}/${shortCode}`;
